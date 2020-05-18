@@ -3,6 +3,16 @@ document.addEventListener("DOMContentLoaded", start);
 
 const endPoint = "https://foobarexam.herokuapp.com/";
 const order = [];
+const beerArray = [];
+const HTML = {};
+
+const Beer = {
+  name: "",
+  type: "",
+  alc: "",
+  price: "",
+  onTap: false,
+};
 
 const OrderItem = {
   name: "",
@@ -15,8 +25,88 @@ function start() {
     placeOrder(order);
   });
 
+  HTML.template = document.querySelector("template");
+  HTML.dest = document.querySelector("main");
+
   fetchSVGS();
-  fetchData();
+  fetchBeers();
+}
+
+function fetchBeers() {
+  fetch(endPoint + "beertypes", {
+    method: "get",
+  })
+    .then((data) => data.json())
+    .then((data) => {
+      fetch(endPoint, {
+        method: "get",
+      })
+        .then((dataBar) => dataBar.json())
+        .then((dataBar) => {
+          cleanData(data, dataBar);
+        });
+    });
+}
+
+function cleanData(data, dataBar) {
+  console.log(data);
+  console.log(dataBar);
+
+  data.forEach((beer) => {
+    let beerItem = Object.create(Beer);
+    const beerNumber = data.indexOf(beer);
+
+    let onTap = dataBar.taps.some((tap) => {
+      return tap.beer === data[beerNumber].name;
+    });
+
+    beerItem.name = data[beerNumber].name;
+    beerItem.type = data[beerNumber].category;
+    beerItem.alc = data[beerNumber].alc;
+    beerItem.price = 35;
+    beerItem.onTap = onTap;
+
+    beerArray.push(beerItem);
+  });
+
+  const sortedArray = beerArray.sort(function (a, b) {
+    return b.onTap - a.onTap;
+  });
+
+  console.log(sortedArray);
+  sortedArray.forEach((beer) => showBeer(beer));
+  fetchSVGS();
+}
+
+function showBeer(beer) {
+  let klon = HTML.template.cloneNode(true).content;
+
+  klon.querySelector(".beer").setAttribute("data-beertype", beer.name);
+  klon.querySelector(".name").textContent = beer.name;
+  klon.querySelector(".type").textContent = beer.type + " - " + beer.alc + "%";
+  klon.querySelector(".price").textContent = "DKK 35,00";
+  //   klon.querySelector(".info").textContent = beer.description.overallImpression;
+
+  if (beer.onTap) {
+    let quantity = 0;
+
+    klon.querySelector(".minus").addEventListener("click", () => {
+      quantity--;
+      updateOrder(beer.name, quantity);
+    });
+
+    klon.querySelector(".add").addEventListener("click", () => {
+      quantity++;
+      updateOrder(beer.name, quantity);
+    });
+
+    klon.querySelector(".quantity p").textContent = quantity;
+  } else {
+    klon.querySelector(".quantity").style.display = "none";
+    klon.querySelector(".price").textContent = "Not on tap right now";
+  }
+
+  HTML.dest.appendChild(klon);
 }
 
 function fetchSVGS() {
@@ -29,48 +119,6 @@ function fetchSVGS() {
         .querySelectorAll(".overlay_container")
         .forEach((beer) => (beer.innerHTML = svg));
     });
-}
-
-function fetchData() {
-  fetch(endPoint + "beertypes", {
-    method: "get",
-  })
-    .then((data) => data.json())
-    .then((data) => {
-      showData(data);
-    });
-}
-
-function showData(data) {
-  console.log(data);
-  data.forEach((beer) => {
-    const beerNumber = data.indexOf(beer);
-    const DOMDest = document.querySelector(
-      `main article:nth-child(${beerNumber + 1})`
-    );
-
-    DOMDest.setAttribute("data-beertype", data[beerNumber].name);
-    DOMDest.querySelector(".name").textContent = data[beerNumber].name;
-    DOMDest.querySelector(".type").textContent =
-      data[beerNumber].category + " - " + data[beerNumber].alc + "%";
-    DOMDest.querySelector(".price").textContent = "DKK 35,00";
-    DOMDest.querySelector(".info").textContent =
-      data[beerNumber].description.overallImpression;
-
-    let quantity = 0;
-
-    DOMDest.querySelector(".minus").addEventListener("click", () => {
-      quantity--;
-      updateOrder(data[beerNumber].name, quantity);
-    });
-
-    DOMDest.querySelector(".add").addEventListener("click", () => {
-      quantity++;
-      updateOrder(data[beerNumber].name, quantity);
-    });
-
-    DOMDest.querySelector(".quantity p").textContent = quantity;
-  });
 }
 
 function updateOrder(beerName, quantity) {
@@ -86,7 +134,11 @@ function updateOrder(beerName, quantity) {
   if (alreadyInArray) {
     const objIndex = order.findIndex((obj) => obj.name === orderItem.name);
 
-    order[objIndex].amount = quantity;
+    if (quantity === 0) {
+      order.splice(objIndex, 1);
+    } else {
+      order[objIndex].amount = quantity;
+    }
   } else {
     order.push(orderItem);
   }
