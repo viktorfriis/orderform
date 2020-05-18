@@ -1,0 +1,27 @@
+@use 'vars'as *;
+* {
+  box-sizing: border-box;
+  font-family: sans-serif;
+  font-family: "Roboto", sans-serif;
+  text-transform: uppercase;
+}
+body {
+  margin: 0;
+  background-color: $background-color;
+}
+html {
+  font-size: 62.5%;
+}
+
+h1 {
+  font-size: 3rem;
+}
+
+h3 {
+  font-size: 1.8rem;
+}
+
+p,
+li {
+  font-size: 1.6rem;
+}
