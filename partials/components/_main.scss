@@ -1,0 +1,72 @@
+body {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+header {
+  img {
+    width: 250px;
+  }
+}
+
+main {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-gap: 7px;
+
+  .beer {
+    width: 100%;
+    height: 350px;
+    background-color: white;
+    border-radius: 15px;
+    position: relative;
+    overflow: hidden;
+
+    svg {
+      width: 100%;
+      position: absolute;
+      bottom: 0;
+      pointer-events: none;
+    }
+
+    .info {
+      color: white;
+      text-align: left;
+      position: absolute;
+      bottom: 0px;
+      padding: 10px;
+      margin: 0;
+      text-transform: none;
+
+      overflow: hidden;
+
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+    }
+
+    .quantity {
+      display: flex;
+      margin: 0 auto;
+      width: fit-content;
+
+      p {
+        margin: 0;
+      }
+    }
+
+    .add,
+    .minus {
+      width: 30px;
+      height: 20px;
+      margin: 0 10px;
+    }
+
+    h3,
+    h4,
+    p {
+      text-align: center;
+    }
+  }
+}
