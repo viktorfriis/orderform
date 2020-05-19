@@ -20,7 +20,23 @@
     </header>
     <main class="show-block"></main>
     <section id="payment" class="hide-block">
-      <article id="select"></article>
+      <section id="select">
+        <article id="options">
+          <h2>Pick your payment type</h2>
+          <form action="#">
+            <input
+              type="radio"
+              name="payment-option"
+              id="pay-counter"
+              checked
+            />
+            <label for="pay-counter">Pay at counter</label><br />
+            <input type="radio" name="payment-option" id="pay-direct" />
+            <label for="pay-direct">Pay directly</label>
+          </form>
+        </article>
+        <button id="place-order-btn">Place order</button>
+      </section>
       <article id="summary">
         <h2>Order summary</h2>
         <div id="order-item-container"></div>
@@ -29,7 +45,6 @@
           <p>100</p>
         </div>
       </article>
-      <button>Place order</button>
     </section>
     <template id="main-temp">
       <article class="beer">

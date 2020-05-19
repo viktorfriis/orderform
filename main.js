@@ -35,6 +35,7 @@ function start() {
   HTML.main = document.querySelector("main");
   HTML.orderItemContainer = document.querySelector("#order-item-container");
   HTML.payment = document.querySelector("#payment");
+  HTML.placeOrderBtn = document.querySelector("#place-order-btn");
 
   HTML.cart = document.querySelector("#cart_container");
   HTML.logo = document.querySelector("#logo");
@@ -63,6 +64,8 @@ function start() {
 function createSummary() {
   HTML.orderItemContainer.innerHTML = "";
   document.querySelector("#total p").textContent = "DKK " + orderTotal + ",00";
+
+  HTML.placeOrderBtn.addEventListener("click", placeOrder);
   order.forEach(showOrder);
 }
 
@@ -258,7 +261,7 @@ function updateOrder(beerName, quantity, summary) {
   console.log(order);
 }
 
-function placeOrder(order) {
+function placeOrder() {
   const postData = JSON.stringify(order);
 
   fetch(endPoint + "order", {
