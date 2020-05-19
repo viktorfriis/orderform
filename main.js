@@ -2,6 +2,8 @@
 document.addEventListener("DOMContentLoaded", start);
 
 const endPoint = "https://foobarexam.herokuapp.com/";
+const restDBEndpoint = "https://frontendspring20-f2e0.restdb.io/rest/beers";
+const APIKey = "5e957b2e436377171a0c2346";
 const order = [];
 const beerArray = [];
 const HTML = {};
@@ -18,6 +20,7 @@ const Beer = {
   onTap: false,
   inOrder: false,
   amountInOrder: 0,
+  popularity: 0,
 };
 
 const OrderItem = {
@@ -119,35 +122,48 @@ function fetchBeers() {
       })
         .then((dataBar) => dataBar.json())
         .then((dataBar) => {
-          cleanData(data, dataBar);
+          fetch(`${restDBEndpoint}?max=10`, {
+            method: "get",
+            headers: {
+              "Content-Type": "application/json; charset=utf-8",
+              "x-apikey": `${APIKey}`,
+              "cache-control": "no-cache",
+            },
+          })
+            .then((restDBData) => restDBData.json())
+            .then((restDBData) => {
+              cleanData(data, dataBar, restDBData);
+            });
         });
     });
 }
 
-function cleanData(data, dataBar) {
-  console.log(data);
-  console.log(dataBar);
-
+function cleanData(data, dataBar, restDBData) {
   data.forEach((beer) => {
     let beerItem = Object.create(Beer);
-    const beerNumber = data.indexOf(beer);
+    const beerIndexPop = restDBData.findIndex((obj) => obj.name === beer.name);
 
     let onTap = dataBar.taps.some((tap) => {
-      return tap.beer === data[beerNumber].name;
+      return tap.beer === beer.name;
     });
 
-    beerItem.name = data[beerNumber].name;
-    beerItem.type = data[beerNumber].category;
-    beerItem.alc = data[beerNumber].alc;
+    beerItem.name = beer.name;
+    beerItem.type = beer.category;
+    beerItem.alc = beer.alc;
     beerItem.price = beerPrice;
-    beerItem.desc = data[beerNumber].description.overallImpression;
+    beerItem.desc = beer.description.overallImpression;
     beerItem.onTap = onTap;
+    beerItem.popularity = restDBData[beerIndexPop].popularity;
 
     beerArray.push(beerItem);
   });
 
   const sortedArray = beerArray.sort(function (a, b) {
-    return b.onTap - a.onTap;
+    if (a.onTap > b.onTap) return -1;
+    if (a.onTap < b.onTap) return 1;
+
+    if (b.popularity > a.popularity) return 1;
+    if (b.popularity < a.popularity) return -1;
   });
 
   console.log(sortedArray);
