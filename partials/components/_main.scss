@@ -12,6 +12,7 @@ header {
 
   #logo {
     width: 250px;
+    cursor: pointer;
   }
 
   #cart_container {
@@ -103,38 +104,6 @@ main {
       }
     }
 
-    .quantity {
-      display: flex;
-      margin: 0 auto;
-      width: fit-content;
-
-      p {
-        margin: auto;
-      }
-    }
-
-    .add,
-    .minus {
-      width: 50px;
-      height: 30px;
-      margin: 0 10px;
-      appearance: none;
-      outline: none;
-      border: none;
-      background-color: darken($color: $background-color, $amount: 2);
-      font-size: 2rem;
-      cursor: pointer;
-    }
-
-    .add {
-      border-top-right-radius: 5px;
-      border-bottom-right-radius: 5px;
-    }
-    .minus {
-      border-top-left-radius: 5px;
-      border-bottom-left-radius: 5px;
-    }
-
     h3,
     h4,
     p {
@@ -145,4 +114,36 @@ main {
 
 .show {
   opacity: 1;
+}
+
+.quantity {
+  display: flex;
+  margin: 0 auto;
+  width: fit-content;
+
+  p {
+    margin: auto;
+  }
+}
+
+.add,
+.minus {
+  width: 50px;
+  height: 30px;
+  margin: 0 10px;
+  appearance: none;
+  outline: none;
+  border: none;
+  background-color: darken($color: $background-color, $amount: 2);
+  font-size: 2rem;
+  cursor: pointer;
+}
+
+.add {
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+.minus {
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
 }

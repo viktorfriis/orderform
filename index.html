@@ -18,10 +18,20 @@
         <p>DKK 35,00</p>
       </div>
     </header>
-    <main></main>
-    <section id="payment"></section>
-    <button class="place_order">Place order</button>
-    <template>
+    <main class="show-block"></main>
+    <section id="payment" class="hide-block">
+      <article id="select"></article>
+      <article id="summary">
+        <h2>Order summary</h2>
+        <div id="order-item-container"></div>
+        <div id="total">
+          <h3>Total</h3>
+          <p>100</p>
+        </div>
+      </article>
+      <button>Place order</button>
+    </section>
+    <template id="main-temp">
       <article class="beer">
         <h3 class="name"></h3>
         <h4 class="type"></h4>
@@ -38,6 +48,17 @@
         </div>
         <img src="static/svgs/info-icon.svg" alt="" class="info-icon" />
       </article>
+    </template>
+    <template id="summary-temp">
+      <div class="order-item">
+        <h3 class="summary-name"></h3>
+        <div class="quantity">
+          <button class="minus">-</button>
+          <p>0</p>
+          <button class="add">+</button>
+        </div>
+        <p class="summary-price"></p>
+      </div>
     </template>
     <script src="main.js"></script>
   </body>

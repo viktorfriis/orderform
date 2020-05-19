@@ -1,0 +1,59 @@
+#payment {
+  width: 100%;
+
+  transition: 0.5s all;
+  grid-template-columns: 1fr 2fr;
+  grid-gap: 7px;
+
+  article {
+    background-color: white;
+    border-radius: 15px;
+    padding: 30px;
+  }
+
+  #summary {
+    h2,
+    h3 {
+      margin-top: 0;
+    }
+
+    h2 {
+      font-size: 2rem;
+    }
+    h3 {
+      font-size: 1.6rem;
+      font-weight: normal;
+      width: 150px;
+    }
+
+    .order-item,
+    #total {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .summary-price {
+        width: 100px;
+      }
+    }
+
+    .order-item:last-child {
+      border-bottom: 1px solid;
+    }
+
+    #total {
+      p {
+        width: 100px;
+        font-weight: bold;
+      }
+    }
+  }
+}
+
+.hide-block {
+  display: none;
+}
+
+.show-block {
+  display: grid;
+}

@@ -7,6 +7,7 @@ const beerArray = [];
 const HTML = {};
 let orderTotal = 0;
 let totalQuantity = 0;
+let beerPrice = 35;
 
 const Beer = {
   name: "",
@@ -15,6 +16,8 @@ const Beer = {
   price: "",
   desc: "",
   onTap: false,
+  inOrder: false,
+  amountInOrder: 0,
 };
 
 const OrderItem = {
@@ -24,16 +27,82 @@ const OrderItem = {
 
 function start() {
   console.log("START");
-  document.querySelector(".place_order").addEventListener("click", () => {
-    placeOrder(order);
-  });
 
   HTML.totalPrice = document.querySelector("#cart_container p");
   HTML.totalPrice.textContent = totalQuantity + " - DKK " + orderTotal + ",00";
-  HTML.template = document.querySelector("template");
-  HTML.dest = document.querySelector("main");
+  HTML.mainTemplate = document.querySelector("#main-temp");
+  HTML.orderItemTemplate = document.querySelector("#summary-temp");
+  HTML.main = document.querySelector("main");
+  HTML.orderItemContainer = document.querySelector("#order-item-container");
+  HTML.payment = document.querySelector("#payment");
+
+  HTML.cart = document.querySelector("#cart_container");
+  HTML.logo = document.querySelector("#logo");
+
+  HTML.cart.addEventListener("click", () => {
+    HTML.main.classList.add("hide-block");
+    HTML.main.classList.remove("show-block");
+
+    HTML.payment.classList.add("show-block");
+    HTML.payment.classList.remove("hide-block");
+
+    createSummary();
+  });
+
+  HTML.logo.addEventListener("click", () => {
+    HTML.main.classList.remove("hide-block");
+    HTML.main.classList.add("show-block");
+
+    HTML.payment.classList.remove("show-block");
+    HTML.payment.classList.add("hide-block");
+  });
 
   fetchBeers();
+}
+
+function createSummary() {
+  HTML.orderItemContainer.innerHTML = "";
+  document.querySelector("#total p").textContent = "DKK " + orderTotal + ",00";
+  order.forEach(showOrder);
+}
+
+function showOrder(orderItem) {
+  let klon = HTML.orderItemTemplate.cloneNode(true).content;
+  const beerIndex = beerArray.findIndex((obj) => obj.name === orderItem.name);
+
+  klon
+    .querySelector(".order-item")
+    .setAttribute("data-summary-beertype", orderItem.name);
+  klon.querySelector(".summary-name").textContent = orderItem.name;
+  klon.querySelector(".summary-price").textContent =
+    "DKK " + beerPrice * orderItem.amount + ",00";
+
+  let quantity = beerArray[beerIndex].amountInOrder;
+  let summary = true;
+
+  klon.querySelector(".minus").addEventListener("click", () => {
+    if (quantity != 0) {
+      orderTotal = orderTotal - beerPrice;
+      totalQuantity--;
+      quantity--;
+
+      beerArray[beerIndex].amountInOrder = quantity;
+      updateOrder(orderItem.name, quantity, summary);
+    }
+  });
+
+  klon.querySelector(".add").addEventListener("click", () => {
+    orderTotal = orderTotal + beerPrice;
+    totalQuantity++;
+    quantity++;
+
+    beerArray[beerIndex].amountInOrder = quantity;
+    updateOrder(orderItem.name, quantity, summary);
+  });
+
+  klon.querySelector(".quantity p").textContent = quantity;
+
+  HTML.orderItemContainer.appendChild(klon);
 }
 
 function fetchBeers() {
@@ -67,7 +136,7 @@ function cleanData(data, dataBar) {
     beerItem.name = data[beerNumber].name;
     beerItem.type = data[beerNumber].category;
     beerItem.alc = data[beerNumber].alc;
-    beerItem.price = 45;
+    beerItem.price = beerPrice;
     beerItem.desc = data[beerNumber].description.overallImpression;
     beerItem.onTap = onTap;
 
@@ -85,7 +154,7 @@ function cleanData(data, dataBar) {
 }
 
 function showBeer(beer) {
-  let klon = HTML.template.cloneNode(true).content;
+  let klon = HTML.mainTemplate.cloneNode(true).content;
 
   klon.querySelector(".beer").setAttribute("data-beertype", beer.name);
   klon.querySelector(".name").textContent = beer.name;
@@ -97,23 +166,30 @@ function showBeer(beer) {
     klon.querySelector(".infobox").classList.add("show");
   });
 
-  if (beer.onTap) {
-    let quantity = 0;
+  let summary = false;
+  let quantity = 0;
 
+  if (beer.onTap) {
     klon.querySelector(".minus").addEventListener("click", () => {
+      quantity = beer.amountInOrder;
       if (quantity != 0) {
         orderTotal = orderTotal - beer.price;
         totalQuantity--;
         quantity--;
-        updateOrder(beer.name, quantity);
+        beer.amountInOrder = quantity;
+        updateOrder(beer.name, quantity, summary);
       }
     });
 
     klon.querySelector(".add").addEventListener("click", () => {
+      quantity = beer.amountInOrder;
       orderTotal = orderTotal + beer.price;
       totalQuantity++;
+
+      beer.inOrder = true;
       quantity++;
-      updateOrder(beer.name, quantity);
+      beer.amountInOrder = quantity;
+      updateOrder(beer.name, quantity, summary);
     });
 
     klon.querySelector(".quantity p").textContent = quantity;
@@ -122,7 +198,7 @@ function showBeer(beer) {
     klon.querySelector(".price").textContent = "Not on tap right now";
   }
 
-  HTML.dest.appendChild(klon);
+  HTML.main.appendChild(klon);
 }
 
 function fetchSVGS() {
@@ -137,7 +213,7 @@ function fetchSVGS() {
     });
 }
 
-function updateOrder(beerName, quantity) {
+function updateOrder(beerName, quantity, summary) {
   let orderItem = Object.create(OrderItem);
 
   orderItem.name = beerName;
@@ -147,9 +223,9 @@ function updateOrder(beerName, quantity) {
     return orderArr.name === orderItem.name;
   });
 
-  if (alreadyInArray) {
-    const objIndex = order.findIndex((obj) => obj.name === orderItem.name);
+  const objIndex = order.findIndex((obj) => obj.name === orderItem.name);
 
+  if (alreadyInArray) {
     if (quantity === 0) {
       order.splice(objIndex, 1);
     } else {
@@ -159,19 +235,27 @@ function updateOrder(beerName, quantity) {
     order.push(orderItem);
   }
 
-  console.log(alreadyInArray);
-
-  console.log(order);
-
   document
     .querySelector(`[data-beertype='${beerName}']`)
     .querySelector(".quantity p").textContent = quantity;
 
-  console.log(orderTotal);
-  //   HTML.totalPrice.textContent = totalQuantity;
   HTML.totalPrice.textContent = totalQuantity + " - DKK " + orderTotal + ",00";
-  //   HTML.totalPrice.textContent =
-  //     totalQuantity + " beers in cart - DKK " + orderTotal + ",00";
+
+  if (summary) {
+    document
+      .querySelector(`[data-summary-beertype='${beerName}']`)
+      .querySelector(".quantity p").textContent = quantity;
+
+    document
+      .querySelector(`[data-summary-beertype='${beerName}']`)
+      .querySelector(".summary-price").textContent =
+      "DKK " + quantity * beerPrice + ",00";
+
+    document.querySelector("#total p").textContent =
+      "DKK " + orderTotal + ",00";
+  }
+
+  console.log(order);
 }
 
 function placeOrder(order) {
