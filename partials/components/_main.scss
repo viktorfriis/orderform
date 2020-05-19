@@ -1,23 +1,64 @@
 @use '../base/vars'as *;
+@use '../base/mixins'as *;
 body {
   max-width: 1000px;
   margin: 0 auto;
+  padding: 15px;
 }
 
 header {
-  img {
+  display: flex;
+  justify-content: space-between;
+
+  #logo {
     width: 250px;
+  }
+
+  #cart_container {
+    position: relative;
+    width: 130px;
+    cursor: pointer;
+
+    p {
+      font-weight: bold;
+      background-color: #cc5408;
+      color: white;
+      padding: 10px;
+      border-radius: 15px;
+      position: absolute;
+      bottom: 0;
+      left: 10px;
+      font-size: 1.2rem;
+    }
+  }
+
+  #cart {
+    width: 50px;
+    margin-top: 10px;
+    position: absolute;
+    right: 0;
   }
 }
 
 main {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
   grid-gap: 7px;
+  grid-template-columns: 1fr;
+  max-width: 300px;
+  margin: 0 auto;
+
+  @include tablet {
+    grid-template-columns: 1fr 1fr;
+    max-width: none;
+  }
+
+  @include desktop {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
 
   .beer {
     width: 100%;
-    height: 350px;
+    height: 300px;
     background-color: white;
     border-radius: 15px;
     position: relative;
@@ -30,21 +71,36 @@ main {
       pointer-events: none;
     }
 
-    .info {
-      color: white;
-      text-align: left;
+    .info-icon {
       position: absolute;
-      bottom: 0px;
-      padding: 10px;
-      margin: 0;
-      text-transform: none;
+      right: 10px;
+      bottom: 10px;
+      fill: white;
+      width: fit-content;
+      pointer-events: all;
+      cursor: pointer;
+    }
 
-      overflow: hidden;
+    .infobox {
+      position: absolute;
+      width: 100%;
+      bottom: 40px;
+      padding: 15px;
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.3s all;
 
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
+      h2 {
+        color: white;
+        margin: 0 0 5px 0;
+      }
+
+      p {
+        text-align: left;
+        margin: 0;
+        color: white;
+        text-transform: none;
+      }
     }
 
     .quantity {
@@ -85,4 +141,8 @@ main {
       text-align: center;
     }
   }
+}
+
+.show {
+  opacity: 1;
 }

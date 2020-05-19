@@ -12,132 +12,15 @@
   </head>
   <body>
     <header>
-      <img src="static/svgs/logo.svg" alt="logo" />
-      <button class="place_order">Place order</button>
+      <img id="logo" src="static/svgs/logo.svg" alt="logo" />
+      <div id="cart_container">
+        <img id="cart" src="static/svgs/shopping-bag.svg" alt="cart" />
+        <p>DKK 35,00</p>
+      </div>
     </header>
-    <main>
-      <!-- <article class="beer">
-        <h3 class="name"></h3>
-        <h4 class="type"></h4>
-        <p class="price"></p>
-        <div class="quantity">
-          <button class="minus">-</button>
-          <p>0</p>
-          <button class="add">+</button>
-        </div>
-        <div class="overlay_container"></div>
-        <p class="info"></p>
-      </article>
-      <article class="beer">
-        <h3 class="name"></h3>
-        <h4 class="type"></h4>
-        <p class="price"></p>
-        <div class="quantity">
-          <button class="minus">-</button>
-          <p>0</p>
-          <button class="add">+</button>
-        </div>
-        <div class="overlay_container"></div>
-        <p class="info"></p>
-      </article>
-      <article class="beer">
-        <h3 class="name"></h3>
-        <h4 class="type"></h4>
-        <p class="price"></p>
-        <div class="quantity">
-          <button class="minus">-</button>
-          <p>0</p>
-          <button class="add">+</button>
-        </div>
-        <div class="overlay_container"></div>
-        <p class="info"></p>
-      </article>
-      <article class="beer">
-        <h3 class="name"></h3>
-        <h4 class="type"></h4>
-        <p class="price"></p>
-        <div class="quantity">
-          <button class="minus">-</button>
-          <p>0</p>
-          <button class="add">+</button>
-        </div>
-        <div class="overlay_container"></div>
-        <p class="info"></p>
-      </article>
-      <article class="beer">
-        <h3 class="name"></h3>
-        <h4 class="type"></h4>
-        <p class="price"></p>
-        <div class="quantity">
-          <button class="minus">-</button>
-          <p>0</p>
-          <button class="add">+</button>
-        </div>
-        <div class="overlay_container"></div>
-        <p class="info"></p>
-      </article>
-      <article class="beer">
-        <h3 class="name"></h3>
-        <h4 class="type"></h4>
-        <p class="price"></p>
-        <div class="quantity">
-          <button class="minus">-</button>
-          <p>0</p>
-          <button class="add">+</button>
-        </div>
-        <div class="overlay_container"></div>
-        <p class="info"></p>
-      </article>
-      <article class="beer">
-        <h3 class="name"></h3>
-        <h4 class="type"></h4>
-        <p class="price"></p>
-        <div class="quantity">
-          <button class="minus">-</button>
-          <p>0</p>
-          <button class="add">+</button>
-        </div>
-        <div class="overlay_container"></div>
-        <p class="info"></p>
-      </article>
-      <article class="beer">
-        <h3 class="name"></h3>
-        <h4 class="type"></h4>
-        <p class="price"></p>
-        <div class="quantity">
-          <button class="minus">-</button>
-          <p>0</p>
-          <button class="add">+</button>
-        </div>
-        <div class="overlay_container"></div>
-        <p class="info"></p>
-      </article>
-      <article class="beer">
-        <h3 class="name"></h3>
-        <h4 class="type"></h4>
-        <p class="price"></p>
-        <div class="quantity">
-          <button class="minus">-</button>
-          <p>0</p>
-          <button class="add">+</button>
-        </div>
-        <div class="overlay_container"></div>
-        <p class="info"></p>
-      </article>
-      <article class="beer">
-        <h3 class="name"></h3>
-        <h4 class="type"></h4>
-        <p class="price"></p>
-        <div class="quantity">
-          <button class="minus">-</button>
-          <p>0</p>
-          <button class="add">+</button>
-        </div>
-        <div class="overlay_container"></div>
-        <p class="info"></p>
-      </article> -->
-    </main>
-
+    <main></main>
+    <section id="payment"></section>
+    <button class="place_order">Place order</button>
     <template>
       <article class="beer">
         <h3 class="name"></h3>
@@ -149,7 +32,11 @@
           <button class="add">+</button>
         </div>
         <div class="overlay_container"></div>
-        <p class="info"></p>
+        <div class="infobox">
+          <h2>Overall Impression</h2>
+          <p></p>
+        </div>
+        <img src="static/svgs/info-icon.svg" alt="" class="info-icon" />
       </article>
     </template>
     <script src="main.js"></script>

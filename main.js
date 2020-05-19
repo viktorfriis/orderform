@@ -5,12 +5,15 @@ const endPoint = "https://foobarexam.herokuapp.com/";
 const order = [];
 const beerArray = [];
 const HTML = {};
+let orderTotal = 0;
+let totalQuantity = 0;
 
 const Beer = {
   name: "",
   type: "",
   alc: "",
   price: "",
+  desc: "",
   onTap: false,
 };
 
@@ -25,10 +28,11 @@ function start() {
     placeOrder(order);
   });
 
+  HTML.totalPrice = document.querySelector("#cart_container p");
+  HTML.totalPrice.textContent = totalQuantity + " - DKK " + orderTotal + ",00";
   HTML.template = document.querySelector("template");
   HTML.dest = document.querySelector("main");
 
-  fetchSVGS();
   fetchBeers();
 }
 
@@ -63,7 +67,8 @@ function cleanData(data, dataBar) {
     beerItem.name = data[beerNumber].name;
     beerItem.type = data[beerNumber].category;
     beerItem.alc = data[beerNumber].alc;
-    beerItem.price = 35;
+    beerItem.price = 45;
+    beerItem.desc = data[beerNumber].description.overallImpression;
     beerItem.onTap = onTap;
 
     beerArray.push(beerItem);
@@ -74,6 +79,7 @@ function cleanData(data, dataBar) {
   });
 
   console.log(sortedArray);
+
   sortedArray.forEach((beer) => showBeer(beer));
   fetchSVGS();
 }
@@ -84,18 +90,28 @@ function showBeer(beer) {
   klon.querySelector(".beer").setAttribute("data-beertype", beer.name);
   klon.querySelector(".name").textContent = beer.name;
   klon.querySelector(".type").textContent = beer.type + " - " + beer.alc + "%";
-  klon.querySelector(".price").textContent = "DKK 35,00";
-  //   klon.querySelector(".info").textContent = beer.description.overallImpression;
+  klon.querySelector(".price").textContent = "DKK " + beer.price + ",00";
+  klon.querySelector(".infobox p").textContent = beer.desc;
+
+  klon.querySelector(".info-icon").addEventListener("click", () => {
+    klon.querySelector(".infobox").classList.add("show");
+  });
 
   if (beer.onTap) {
     let quantity = 0;
 
     klon.querySelector(".minus").addEventListener("click", () => {
-      quantity--;
-      updateOrder(beer.name, quantity);
+      if (quantity != 0) {
+        orderTotal = orderTotal - beer.price;
+        totalQuantity--;
+        quantity--;
+        updateOrder(beer.name, quantity);
+      }
     });
 
     klon.querySelector(".add").addEventListener("click", () => {
+      orderTotal = orderTotal + beer.price;
+      totalQuantity++;
       quantity++;
       updateOrder(beer.name, quantity);
     });
@@ -150,6 +166,12 @@ function updateOrder(beerName, quantity) {
   document
     .querySelector(`[data-beertype='${beerName}']`)
     .querySelector(".quantity p").textContent = quantity;
+
+  console.log(orderTotal);
+  //   HTML.totalPrice.textContent = totalQuantity;
+  HTML.totalPrice.textContent = totalQuantity + " - DKK " + orderTotal + ",00";
+  //   HTML.totalPrice.textContent =
+  //     totalQuantity + " beers in cart - DKK " + orderTotal + ",00";
 }
 
 function placeOrder(order) {

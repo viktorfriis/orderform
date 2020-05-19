@@ -2,11 +2,17 @@
   .overlay {
     fill: #f5ca06;
   }
+  .info {
+    background-color: #f5ca06;
+  }
 }
 
 [data-beertype="Fairy Tale Ale"] {
   .overlay {
     fill: #eb8d02;
+  }
+  .info {
+    background-color: #eb8d02;
   }
 }
 
@@ -14,11 +20,18 @@
   .overlay {
     fill: #eb8d02;
   }
+
+  .info {
+    background-color: #eb8d02;
+  }
 }
 
 [data-beertype="Hollaback Lager"] {
   .overlay {
     fill: #cc5408;
+  }
+  .info {
+    background-color: #cc5408;
   }
 }
 
@@ -26,11 +39,17 @@
   .overlay {
     fill: #eb8d02;
   }
+  .info {
+    background-color: #eb8d02;
+  }
 }
 
 [data-beertype="Mowintime"] {
   .overlay {
     fill: #cc5408;
+  }
+  .info {
+    background-color: #cc5408;
   }
 }
 
@@ -38,11 +57,17 @@
   .overlay {
     fill: #3d1102;
   }
+  .info {
+    background-color: #3d1102;
+  }
 }
 
 [data-beertype="Ruined Childhood"] {
   .overlay {
     fill: #bf7d02;
+  }
+  .info {
+    background-color: #bf7d02;
   }
 }
 
@@ -50,10 +75,16 @@
   .overlay {
     fill: #bf7d02;
   }
+  .info {
+    background-color: #bf7d02;
+  }
 }
 
 [data-beertype="Steampunk"] {
   .overlay {
     fill: #d6a309;
+  }
+  .info {
+    background-color: #d6a309;
   }
 }
