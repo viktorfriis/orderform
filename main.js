@@ -112,16 +112,19 @@ function showOrder(orderItem) {
 }
 
 function fetchBeers() {
+  //Fetcher data fra endpoint med /beertypes, for at få generel information om øllene.
   fetch(endPoint + "beertypes", {
     method: "get",
   })
     .then((data) => data.json())
     .then((data) => {
+      //Efter det fetcher vi fra endpointet direkte, for at få indformation om, om den enkelte øl er on tap.
       fetch(endPoint, {
         method: "get",
       })
         .then((dataBar) => dataBar.json())
         .then((dataBar) => {
+          //Efter det fetcher vi fra vores egen database, hvor vi har information om øllenes popularitet.
           fetch(`${restDBEndpoint}?max=10`, {
             method: "get",
             headers: {
@@ -132,6 +135,7 @@ function fetchBeers() {
           })
             .then((restDBData) => restDBData.json())
             .then((restDBData) => {
+              //Når alt er hentet kalder vi funktionen cleanData, med de 3 arrays som parameter.
               cleanData(data, dataBar, restDBData);
             });
         });
@@ -139,25 +143,38 @@ function fetchBeers() {
 }
 
 function cleanData(data, dataBar, restDBData) {
+  //Vi bruger vores array fra /beertypes endpointet, til at bygge hver objekt til vores order form.
   data.forEach((beer) => {
+    //Vi bruger vores prototype som er bygget på øverst, og fylder den ud for hver øl i arrayet.
     let beerItem = Object.create(Beer);
-    const beerIndexPop = restDBData.findIndex((obj) => obj.name === beer.name);
 
-    let onTap = dataBar.taps.some((tap) => {
-      return tap.beer === beer.name;
-    });
-
+    //Her fylder vi protoypen ud med information om hver øl fra /beertypes endpointet.
     beerItem.name = beer.name;
     beerItem.type = beer.category;
     beerItem.alc = beer.alc;
     beerItem.price = beerPrice;
     beerItem.desc = beer.description.overallImpression;
+
+    /*For at finde ud af om den enkelte øl er på tap, kører vi en some metode på dataBar.taps arrayet, som er 
+    arrayet over alle de øl der er på tap lige nu. Funktionen returnerer true hvis den er, og false hvis den
+    ikke er.*/
+    let onTap = dataBar.taps.some((tap) => {
+      return tap.beer === beer.name;
+    });
     beerItem.onTap = onTap;
+
+    /*Vi bruger findIndex metoden på vores array fra vores egen database, til at finde indexet på den respektive
+    øl. Det bruger vi bagefter til at sætte populariteten i prototypen*/
+    const beerIndexPop = restDBData.findIndex((obj) => obj.name === beer.name);
     beerItem.popularity = restDBData[beerIndexPop].popularity;
 
+    //Til sidst tilføjer vi hver øl til vores lokale array beerArray.
     beerArray.push(beerItem);
   });
 
+  /*beerArray bliver her sorteret. Først efter om øllene er på tap eller ej. Alle dem der ikke er på tap, bliver 
+  vist til sidst. Herefter sorterer vi på popularitet.
+  https://gomakethings.com/sorting-an-array-by-multiple-criteria-with-vanilla-javascript/*/
   const sortedArray = beerArray.sort(function (a, b) {
     if (a.onTap > b.onTap) return -1;
     if (a.onTap < b.onTap) return 1;
@@ -168,13 +185,16 @@ function cleanData(data, dataBar, restDBData) {
 
   console.log(sortedArray);
 
+  //For hver øl i vores sorterede array kører vi funktionen showBeer, som skriver øllen ud i DOM'en.
   sortedArray.forEach((beer) => showBeer(beer));
   fetchSVGS();
 }
 
 function showBeer(beer) {
+  //Vi laver en klon af vores template, som vi har lavet i HTML'en
   let klon = HTML.mainTemplate.cloneNode(true).content;
 
+  //Klonen fylder vi så ud med de relevante info fra vores beerArray
   klon.querySelector(".beer").setAttribute("data-beertype", beer.name);
   klon.querySelector(".name").textContent = beer.name;
   klon.querySelector(".type").textContent = beer.type + " - " + beer.alc + "%";
@@ -182,45 +202,70 @@ function showBeer(beer) {
   klon.querySelector(".infobox p").textContent = beer.desc;
 
   klon.querySelector(".info-icon").addEventListener("click", () => {
-    klon.querySelector(".infobox").classList.add("show");
+    toggleInfo(beer.name);
   });
 
-  let summary = false;
+  let onSummaryPage = false;
+
+  //Vi sætter quantity til at være 0, så "bestillingen" nulstilles hver gang der refreshes
   let quantity = 0;
 
+  //Hvis øllen er på tap gør vi plus og minus knapperne klikbare.
   if (beer.onTap) {
     klon.querySelector(".minus").addEventListener("click", () => {
+      //Vi sætter quantity til at være lig med hvad der står i arrayet for den respektive øl.
       quantity = beer.amountInOrder;
       if (quantity != 0) {
+        //Hvis quantity IKKE er lig med 0, minusser vi totalprisen, total quantity og den respektive øls quantity
         orderTotal = orderTotal - beer.price;
         totalQuantity--;
         quantity--;
+
+        //Her opdaterer vi øllens prototype med den nye quantity
         beer.amountInOrder = quantity;
-        updateOrder(beer.name, quantity, summary);
+
+        /*Til sidst kalder vi updateOrder, med øllens navn, quantity og onSummaryPage variablen, som fortæller om vi er på 
+        summary siden eller ej*/
+        updateOrder(beer.name, quantity, onSummaryPage);
       }
     });
 
     klon.querySelector(".add").addEventListener("click", () => {
+      //Vi sætter quantity til at være lig med hvad der står i arrayet for den respektive øl.
       quantity = beer.amountInOrder;
+
+      //Vi ligger til på totalprisen, total quantity og den respektive øls quantity
       orderTotal = orderTotal + beer.price;
       totalQuantity++;
-
-      beer.inOrder = true;
       quantity++;
+
+      //Vi sætter beer.inOrder til at være true
+      beer.inOrder = true;
+
+      //Her opdaterer vi øllens prototype med den nye quantity, og kalder igen updateOrder, ligesom ovenfor.
       beer.amountInOrder = quantity;
-      updateOrder(beer.name, quantity, summary);
+      updateOrder(beer.name, quantity, onSummaryPage);
     });
 
     klon.querySelector(".quantity p").textContent = quantity;
   } else {
+    //Hvis øllen IKKE er på tap, fjerner vi plus minus fra DOM'en, og skriver at den ikke er på tap.
     klon.querySelector(".quantity").style.display = "none";
     klon.querySelector(".price").textContent = "Not on tap right now";
   }
 
+  //Til sidst appender vi hver klon i vores main tag.
   HTML.main.appendChild(klon);
 }
 
+function toggleInfo(beer) {
+  document
+    .querySelector(`[data-beertype='${beer}']`)
+    .classList.toggle("info-open");
+}
+
 function fetchSVGS() {
+  //Her henter vi SVG overlayet til hver øl i DOM'en.
   fetch("svgs/overlay.svg", {
     method: "get",
   })
@@ -232,35 +277,44 @@ function fetchSVGS() {
     });
 }
 
-function updateOrder(beerName, quantity, summary) {
+function updateOrder(beerName, quantity, onSummaryPage) {
+  //Her bruger vi igen en prototype, for at sikre at vi bruger det rigtige format, til at poste vores ordre
   let orderItem = Object.create(OrderItem);
 
   orderItem.name = beerName;
   orderItem.amount = quantity;
 
+  //Her tjekker vi om øllens navn allerede står i arrayet med ordren
   let alreadyInArray = order.some((orderArr) => {
     return orderArr.name === orderItem.name;
   });
 
-  const objIndex = order.findIndex((obj) => obj.name === orderItem.name);
-
   if (alreadyInArray) {
+    /*Hvis øllen allerede står i arrayet, skal vi enten fjerne den (hvis der bliver trykket minus og der er én i forvejen),
+    eller lægge én til amounten. Derfor skal vi bruge indexet i ordre arrayet, på den respektive øl der bliver trykket på.*/
+    const objIndex = order.findIndex((obj) => obj.name === orderItem.name);
     if (quantity === 0) {
+      //Hvis quantity er lig med 0, fjerner vi objektet fra arrayet.
       order.splice(objIndex, 1);
     } else {
+      //ellers opdaterer vi amounten med den nye quantity.
       order[objIndex].amount = quantity;
     }
   } else {
+    //Hvis den ikke allerede står i arrayet, tilføjer vi den prototype vi lavede længere oppe.
     order.push(orderItem);
   }
 
+  //Her skriver vi den korrekte quantity ud i DOM'en, på det rigtige sted.
   document
     .querySelector(`[data-beertype='${beerName}']`)
     .querySelector(".quantity p").textContent = quantity;
 
+  //Vi opdaterer her kurven oppe i højre hjørne.
   HTML.totalPrice.textContent = totalQuantity + " - DKK " + orderTotal + ",00";
 
-  if (summary) {
+  //Hvis vi er på summary siden, skriver vi de rigtige data ud i DOM'en.
+  if (onSummaryPage) {
     document
       .querySelector(`[data-summary-beertype='${beerName}']`)
       .querySelector(".quantity p").textContent = quantity;
@@ -278,6 +332,7 @@ function updateOrder(beerName, quantity, summary) {
 }
 
 function placeOrder() {
+  //Vi stringifyer vores ordre, og poster til endpointet med /order bagpå.
   const postData = JSON.stringify(order);
 
   fetch(endPoint + "order", {
