@@ -47,6 +47,7 @@ main {
   grid-template-columns: 1fr;
   max-width: 300px;
   margin: 0 auto;
+  margin-top: 30px;
 
   @include tablet {
     grid-template-columns: 1fr 1fr;
@@ -113,6 +114,32 @@ main {
     h4,
     p {
       text-align: center;
+    }
+  }
+
+  .placeholder {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .loader {
+    border: 10px solid white;
+    border-top: 10px solid $accent;
+
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+
+    100% {
+      transform: rotate(360deg);
     }
   }
 }

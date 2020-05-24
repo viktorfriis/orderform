@@ -10,6 +10,7 @@ const HTML = {};
 let orderTotal = 0;
 let totalQuantity = 0;
 let beerPrice = 35;
+let paymentOptionSelected = "counter";
 
 const Beer = {
   name: "",
@@ -39,6 +40,12 @@ function start() {
   HTML.orderItemContainer = document.querySelector("#order-item-container");
   HTML.payment = document.querySelector("#payment");
   HTML.placeOrderBtn = document.querySelector("#place-order-btn");
+  HTML.orderConfirmation = document.querySelector("#order_confirmation");
+  HTML.orderIDConfirmation = document.querySelector("#order_confirmation h2");
+  HTML.placeNewOrderBtn = document.querySelector("#place-new-btn");
+  HTML.mobilePay = document.querySelector("#mobilepay");
+  HTML.counter = document.querySelector("#counter");
+  HTML.processing = document.querySelector("#processing");
 
   HTML.cart = document.querySelector("#cart_container");
   HTML.logo = document.querySelector("#logo");
@@ -50,6 +57,9 @@ function start() {
     HTML.payment.classList.add("show-block");
     HTML.payment.classList.remove("hide-block");
 
+    HTML.orderConfirmation.classList.remove("show-block");
+    HTML.orderConfirmation.classList.add("hide-block");
+
     createSummary();
   });
 
@@ -59,6 +69,9 @@ function start() {
 
     HTML.payment.classList.remove("show-block");
     HTML.payment.classList.add("hide-block");
+
+    HTML.orderConfirmation.classList.remove("show-block");
+    HTML.orderConfirmation.classList.add("hide-block");
   });
 
   fetchBeers();
@@ -68,8 +81,56 @@ function createSummary() {
   HTML.orderItemContainer.innerHTML = "";
   document.querySelector("#total p").textContent = "DKK " + orderTotal + ",00";
 
-  HTML.placeOrderBtn.addEventListener("click", placeOrder);
+  if (order.length === 0) {
+    document.querySelector("#total p").textContent = "";
+    document.querySelector("#total h3").textContent = "Your cart is empty...";
+    HTML.placeOrderBtn.disabled = true;
+    document
+      .querySelectorAll("input[type='radio']")
+      .forEach((radio) => (radio.disabled = true));
+  } else {
+    document.querySelector("#total p").textContent =
+      "DKK " + orderTotal + ",00";
+    document.querySelector("#total h3").textContent = "Total";
+    HTML.placeOrderBtn.disabled = false;
+    document
+      .querySelectorAll("input[type='radio']")
+      .forEach((radio) => (radio.disabled = false));
+  }
+
+  HTML.placeOrderBtn.addEventListener("click", () => {
+    if (paymentOptionSelected === "mobilepay") {
+      if (document.querySelector("#phone-number").checkValidity()) {
+        placeOrder();
+      } else {
+        document.querySelector(".error").classList.remove("hide-block");
+        document
+          .querySelector("#phone-number")
+          .addEventListener("focus", () => {
+            document.querySelector(".error").classList.add("hide-block");
+          });
+      }
+    } else {
+      placeOrder();
+    }
+  });
   order.forEach(showOrder);
+
+  HTML.mobilePay.addEventListener("click", () => {
+    paymentOptionSelected = "mobilepay";
+    HTML.counter.classList.remove("selected-option");
+    HTML.mobilePay.classList.add("selected-option");
+    document.querySelector("#phone").className = "show-block";
+    HTML.placeOrderBtn.textContent = "Pay now";
+  });
+
+  HTML.counter.addEventListener("click", () => {
+    paymentOptionSelected = "counter";
+    HTML.mobilePay.classList.remove("selected-option");
+    HTML.counter.classList.add("selected-option");
+    document.querySelector("#phone").className = "hide-block";
+    HTML.placeOrderBtn.textContent = "Place order";
+  });
 }
 
 function showOrder(orderItem) {
@@ -137,6 +198,9 @@ function fetchBeers() {
             .then((restDBData) => {
               //Når alt er hentet kalder vi funktionen cleanData, med de 3 arrays som parameter.
               cleanData(data, dataBar, restDBData);
+              document
+                .querySelectorAll(".placeholder")
+                .forEach((placeholder) => placeholder.remove());
             });
         });
     });
@@ -259,9 +323,17 @@ function showBeer(beer) {
 }
 
 function toggleInfo(beer) {
-  document
-    .querySelector(`[data-beertype='${beer}']`)
-    .classList.toggle("info-open");
+  beerArray.forEach((beerInfo) => {
+    if (beerInfo.name != beer) {
+      document
+        .querySelector(`[data-beertype='${beerInfo.name}']`)
+        .classList.remove("info-open");
+    } else {
+      document
+        .querySelector(`[data-beertype='${beer}']`)
+        .classList.toggle("info-open");
+    }
+  });
 }
 
 function fetchSVGS() {
@@ -326,14 +398,48 @@ function updateOrder(beerName, quantity, onSummaryPage) {
 
     document.querySelector("#total p").textContent =
       "DKK " + orderTotal + ",00";
+
+    if (order.length === 0) {
+      document.querySelector("#total p").textContent = "";
+      document.querySelector("#total h3").textContent = "Your cart is empty...";
+      HTML.placeOrderBtn.disabled = true;
+      document
+        .querySelectorAll("input[type='radio']")
+        .forEach((radio) => (radio.disabled = true));
+    } else {
+      document.querySelector("#total p").textContent =
+        "DKK " + orderTotal + ",00";
+      document.querySelector("#total h3").textContent = "Total";
+      HTML.placeOrderBtn.disabled = false;
+      document
+        .querySelectorAll("input[type='radio']")
+        .forEach((radio) => (radio.disabled = false));
+    }
   }
 
   console.log(order);
 }
 
 function placeOrder() {
+  HTML.payment.className = "hide-block";
+  HTML.processing.className = "show-block";
+  HTML.processing.querySelector("h1").textContent = "Processing order";
   //Vi stringifyer vores ordre, og poster til endpointet med /order bagpå.
   const postData = JSON.stringify(order);
+
+  beerArray.forEach((beer) => {
+    beer.inOrder = false;
+    beer.amountInOrder = 0;
+  });
+
+  order.length = 0;
+  totalQuantity = 0;
+  orderTotal = 0;
+  HTML.totalPrice.textContent = totalQuantity + " - DKK " + orderTotal + ",00";
+  console.log(order);
+  document
+    .querySelectorAll(".quantity p")
+    .forEach((q) => (q.textContent = "0"));
 
   fetch(endPoint + "order", {
     method: "post",
@@ -343,5 +449,40 @@ function placeOrder() {
     body: postData,
   })
     .then((e) => e.json())
-    .then((e) => console.log(e));
+    .then((e) => {
+      console.log(e);
+
+      fetch(endPoint, {
+        method: "get",
+      })
+        .then((newData) => newData.json())
+        .then((newData) => {
+          const orderID = newData.queue[newData.queue.length - 1].id;
+          HTML.orderIDConfirmation.textContent =
+            "Your order number is #" + orderID;
+
+          if (paymentOptionSelected === "counter") {
+            HTML.processing.className = "hide-block";
+            HTML.orderConfirmation.className = "show-block";
+            HTML.placeNewOrderBtn.addEventListener("click", () => {
+              HTML.main.className = "show-block";
+              HTML.payment.className = "hide-block";
+              HTML.orderConfirmation.className = "hide-block";
+            });
+          }
+        });
+    });
+
+  if (paymentOptionSelected === "mobilepay") {
+    HTML.processing.querySelector("h1").textContent = "Waiting for payment";
+    setTimeout(() => {
+      HTML.processing.className = "hide-block";
+      HTML.orderConfirmation.className = "show-block";
+      HTML.placeNewOrderBtn.addEventListener("click", () => {
+        HTML.main.className = "show-block";
+        HTML.payment.className = "hide-block";
+        HTML.orderConfirmation.className = "hide-block";
+      });
+    }, 3000);
+  }
 }

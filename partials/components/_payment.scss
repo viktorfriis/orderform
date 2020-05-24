@@ -2,10 +2,22 @@
 @use '../base/mixins'as *;
 #payment {
   width: 100%;
+  margin-top: 30px;
 
-  transition: 0.5s all;
-  grid-template-columns: 1fr 2fr;
+  @include medium {
+    grid-template-columns: 1fr 2fr;
+  }
+
   grid-gap: 7px;
+
+  h2,
+  h3 {
+    margin-top: 0;
+  }
+
+  h2 {
+    font-size: 2rem;
+  }
 
   article {
     background-color: white;
@@ -14,34 +26,137 @@
     padding: 30px;
   }
 
-  #place-order-btn {
-    width: 100%;
-    margin-top: 7px;
-    height: 50px;
-    border-radius: 15px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-    border: none;
-    outline: none;
+  .option {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    height: 75px;
+    margin-bottom: 7px;
     cursor: pointer;
-    background-color: $accent;
-    color: white;
-    font-size: 1.8rem;
-    font-weight: bold;
-  }
 
-  #summary {
-    h2,
-    h3 {
-      margin-top: 0;
+    img {
+      width: 25px;
     }
 
-    h2 {
-      font-size: 2rem;
+    img:last-child {
+      visibility: hidden;
     }
+
     h3 {
       font-size: 1.6rem;
       font-weight: normal;
-      width: 150px;
+      width: 130px;
+    }
+  }
+
+  .selected-option {
+    border: 1px solid #00b915;
+    img:last-child {
+      visibility: visible;
+    }
+  }
+
+  #mobilepay {
+    img:first-child {
+      width: 40px;
+    }
+  }
+
+  label {
+    font-size: 1.2rem;
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 3px;
+    text-transform: none;
+  }
+
+  input[type="text"] {
+    background-color: white;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+    height: 50px;
+    padding: 0 20px;
+    font-size: 1.6rem;
+    border: none;
+    margin-bottom: 7px;
+    text-transform: none;
+  }
+
+  input[type="text"]:focus {
+    border: none;
+    outline: none;
+  }
+
+  .error {
+    color: red;
+    margin-top: -5px;
+    margin-bottom: 20px;
+    z-index: 10;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+
+    // display: none;
+
+    span.material-icons {
+      font-size: 1.6rem;
+      margin-right: 5px;
+      transform: translateY(4px);
+    }
+
+    span + span {
+      font-size: 1.2rem;
+      text-transform: none;
+    }
+  }
+
+  #place-order-btn {
+    width: fit-content;
+
+    @include medium {
+      width: 100%;
+    }
+  }
+
+  #summary {
+    grid-row: 1;
+    height: fit-content;
+
+    @include medium {
+      grid-column: 2;
+    }
+
+    h3 {
+      font-size: 1.6rem;
+      font-weight: normal;
+      width: 160px;
+    }
+
+    #total {
+      h3 {
+        width: 200px;
+      }
+    }
+
+    .order-item {
+      position: relative;
+      margin-bottom: 30px;
+
+      @include tablet {
+        margin-bottom: 0;
+      }
+    }
+
+    .quantity {
+      position: absolute;
+      top: 40px;
+      left: -10px;
+
+      @include tablet {
+        position: relative;
+        top: 0;
+        left: 0;
+      }
     }
 
     .order-item,
@@ -57,6 +172,12 @@
 
     .order-item:last-child {
       border-bottom: 1px solid;
+      padding-bottom: 30px;
+      margin-bottom: 0;
+
+      @include tablet {
+        padding-bottom: 0;
+      }
     }
 
     #total {
@@ -74,4 +195,92 @@
 
 .show-block {
   display: grid;
+}
+
+#order_confirmation {
+  margin-top: 30px;
+  padding: 30px;
+  width: 100%;
+  background-color: white;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  border-radius: 15px;
+
+  img {
+    width: 200px;
+    margin: 0 auto 30px auto;
+  }
+
+  h1 {
+    margin: 0;
+  }
+
+  h2 {
+    font-size: 2rem;
+    margin-top: 10px;
+  }
+
+  p {
+    margin-bottom: 60px;
+  }
+
+  h2,
+  p,
+  h1 {
+    text-align: center;
+  }
+}
+
+.main_btn {
+  height: 50px;
+  border-radius: 15px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  border: none;
+  outline: none;
+  cursor: pointer;
+  background-color: $accent;
+  color: white;
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin: 0 auto;
+  width: fit-content;
+  padding: 0 20px;
+}
+
+.main_btn:disabled {
+  background-color: rgb(180, 180, 180);
+  cursor: inherit;
+}
+
+#processing {
+  margin-top: 30px;
+  background-color: white;
+  border-radius: 15px;
+  width: 100%;
+  padding: 30px;
+
+  h1 {
+    text-align: center;
+    margin: 30px 0 0 0;
+  }
+}
+
+.loader {
+  border: 10px solid white;
+  border-top: 10px solid $accent;
+
+  border-radius: 50%;
+  width: 150px;
+  height: 150px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }

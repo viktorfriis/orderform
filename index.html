@@ -9,6 +9,10 @@
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap"
       rel="stylesheet"
     />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <header>
@@ -18,24 +22,69 @@
         <p>DKK 35,00</p>
       </div>
     </header>
-    <main class="show-block"></main>
+    <main class="show-block">
+      <article class="beer placeholder">
+        <div class="loader"></div>
+      </article>
+      <article class="beer placeholder">
+        <div class="loader"></div>
+      </article>
+      <article class="beer placeholder">
+        <div class="loader"></div>
+      </article>
+      <article class="beer placeholder">
+        <div class="loader"></div>
+      </article>
+      <article class="beer placeholder">
+        <div class="loader"></div>
+      </article>
+      <article class="beer placeholder">
+        <div class="loader"></div>
+      </article>
+      <article class="beer placeholder">
+        <div class="loader"></div>
+      </article>
+      <article class="beer placeholder">
+        <div class="loader"></div>
+      </article>
+      <article class="beer placeholder">
+        <div class="loader"></div>
+      </article>
+      <article class="beer placeholder">
+        <div class="loader"></div>
+      </article>
+    </main>
     <section id="payment" class="hide-block">
       <section id="select">
-        <article id="options">
+        <section id="options">
           <h2>Pick your payment type</h2>
-          <form action="#">
+          <article class="option selected-option" id="counter">
+            <img src="static/svgs/creditcard.svg" alt="credit card logo" />
+            <h3>Pay at counter</h3>
+            <img src="static/svgs/checkmark.svg" alt="checkmark" />
+          </article>
+          <article class="option" id="mobilepay">
+            <img src="static/svgs/mp-logo.svg" alt="mobilepay logo" />
+            <h3>MobilePay</h3>
+            <img src="static/svgs/checkmark.svg" alt="checkmark" />
+          </article>
+          <form action="#" id="phone" class="hide-block">
+            <label for="phone">Phone number</label>
             <input
-              type="radio"
-              name="payment-option"
-              id="pay-counter"
-              checked
+              type="text"
+              name="phone"
+              id="phone-number"
+              placeholder="Phone number"
+              pattern="[0-9]{8}"
+              maxlength="8"
             />
-            <label for="pay-counter">Pay at counter</label><br />
-            <input type="radio" name="payment-option" id="pay-direct" />
-            <label for="pay-direct">Pay directly</label>
+            <p class="error hide-block">
+              <span class="material-icons"> error </span
+              ><span>Please type a valid danish phone number.</span>
+            </p>
           </form>
-        </article>
-        <button id="place-order-btn">Place order</button>
+        </section>
+        <button id="place-order-btn" class="main_btn">Place order</button>
       </section>
       <article id="summary">
         <h2>Order summary</h2>
@@ -45,6 +94,17 @@
           <p>100</p>
         </div>
       </article>
+    </section>
+    <section id="processing" class="hide-block">
+      <div class="loader"></div>
+      <h1>Processing order</h1>
+    </section>
+    <section id="order_confirmation" class="hide-block">
+      <img src="static/svgs/checkmark-orange.svg" alt="checkmark" />
+      <h1>Thank you</h1>
+      <h2>Your order number is: #</h2>
+      <p>Please provide your order number at the counter.</p>
+      <button id="place-new-btn" class="main_btn">Place new order</button>
     </section>
     <template id="main-temp">
       <article class="beer">
