@@ -80,6 +80,7 @@ main {
       bottom: 10px;
       fill: white;
       width: fit-content;
+      width: -moz-fit-content;
       pointer-events: all;
       cursor: pointer;
       width: 20px;
@@ -152,6 +153,7 @@ main {
   display: flex;
   margin: 0 auto;
   width: fit-content;
+  width: -moz-fit-content;
 
   p {
     margin: auto;

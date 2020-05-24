@@ -3,12 +3,12 @@
 #payment {
   width: 100%;
   margin-top: 30px;
+  grid-gap: 20px;
 
   @include medium {
     grid-template-columns: 1fr 2fr;
+    grid-gap: 7px;
   }
-
-  grid-gap: 7px;
 
   h2,
   h3 {
@@ -34,6 +34,7 @@
     height: 75px;
     margin-bottom: 7px;
     cursor: pointer;
+    max-width: 325px;
 
     img {
       width: 25px;
@@ -81,6 +82,7 @@
     border: none;
     margin-bottom: 7px;
     text-transform: none;
+    max-width: 325px;
   }
 
   input[type="text"]:focus {
@@ -112,6 +114,7 @@
 
   #place-order-btn {
     width: fit-content;
+    width: -moz-fit-content;
 
     @include medium {
       width: 100%;
@@ -121,6 +124,8 @@
   #summary {
     grid-row: 1;
     height: fit-content;
+    height: -moz-fit-content;
+    background-color: transparent;
 
     @include medium {
       grid-column: 2;
@@ -243,6 +248,7 @@
   font-weight: bold;
   margin: 0 auto;
   width: fit-content;
+  width: -moz-fit-content;
   padding: 0 20px;
 }
 
