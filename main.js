@@ -12,6 +12,9 @@ let totalQuantity = 0;
 // let beerPrice = 35;
 let paymentOptionSelected = "counter";
 
+let today = new Date().toString().substring(0, 3).toLowerCase();
+console.log(today);
+
 const Beer = {
   name: "",
   type: "",
@@ -232,7 +235,22 @@ function cleanData(data, dataBar, restDBData) {
     /*Vi bruger findIndex metoden på vores array fra vores egen database, til at finde indexet på den respektive
     øl. Det bruger vi bagefter til at sætte populariteten i prototypen*/
     const beerIndexPop = restDBData.findIndex((obj) => obj.name === beer.name);
-    beerItem.popularity = restDBData[beerIndexPop].popularity;
+
+    if (today === "mon") {
+      beerItem.popularity = restDBData[beerIndexPop].salesMon;
+    } else if (today === "tue") {
+      beerItem.popularity = restDBData[beerIndexPop].salesTue;
+    } else if (today === "wed") {
+      beerItem.popularity = restDBData[beerIndexPop].salesWed;
+    } else if (today === "thu") {
+      beerItem.popularity = restDBData[beerIndexPop].salesThu;
+    } else if (today === "fri") {
+      beerItem.popularity = restDBData[beerIndexPop].salesFri;
+    } else if (today === "sat") {
+      beerItem.popularity = restDBData[beerIndexPop].salesSat;
+    } else if (today === "sun") {
+      beerItem.popularity = restDBData[beerIndexPop].salesSun;
+    }
 
     //Til sidst tilføjer vi hver øl til vores lokale array beerArray.
     beerArray.push(beerItem);
@@ -241,6 +259,16 @@ function cleanData(data, dataBar, restDBData) {
   /*beerArray bliver her sorteret. Først efter om øllene er på tap eller ej. Alle dem der ikke er på tap, bliver 
   vist til sidst. Herefter sorterer vi på popularitet.
   https://gomakethings.com/sorting-an-array-by-multiple-criteria-with-vanilla-javascript/*/
+  const sortedArray = sortArray();
+
+  console.log(sortedArray);
+
+  //For hver øl i vores sorterede array kører vi funktionen showBeer, som skriver øllen ud i DOM'en.
+  sortedArray.forEach((beer) => showBeer(beer));
+  fetchSVGS();
+}
+
+function sortArray() {
   const sortedArray = beerArray.sort(function (a, b) {
     if (a.onTap > b.onTap) return -1;
     if (a.onTap < b.onTap) return 1;
@@ -249,11 +277,7 @@ function cleanData(data, dataBar, restDBData) {
     if (b.popularity < a.popularity) return -1;
   });
 
-  console.log(sortedArray);
-
-  //For hver øl i vores sorterede array kører vi funktionen showBeer, som skriver øllen ud i DOM'en.
-  sortedArray.forEach((beer) => showBeer(beer));
-  fetchSVGS();
+  return sortedArray;
 }
 
 function showBeer(beer) {
