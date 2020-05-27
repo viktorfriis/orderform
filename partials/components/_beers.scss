@@ -31,6 +31,17 @@ $darken-amount: 10;
   }
 }
 
+.not-on-tap {
+  color: rgb(163, 162, 162);
+  .quantity {
+    display: none;
+  }
+
+  .overlay {
+    fill: rgb(163, 162, 162);
+  }
+}
+
 // [data-beertype="El Hefe"] {
 //   .overlay {
 //     fill: #f5ca06;

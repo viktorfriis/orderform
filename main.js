@@ -352,8 +352,11 @@ function showBeer(beer) {
     klon.querySelector(".quantity p").textContent = quantity;
   } else {
     //Hvis øllen IKKE er på tap, fjerner vi plus minus fra DOM'en, og skriver at den ikke er på tap.
-    klon.querySelector(".quantity").style.display = "none";
     klon.querySelector(".price").textContent = "Not on tap right now";
+    klon.querySelector(".beer").classList.add("not-on-tap");
+    klon
+      .querySelector(".beer")
+      .style.setProperty("--beer-color-darken", "black");
   }
 
   //Til sidst appender vi hver klon i vores main tag.
