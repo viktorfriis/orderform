@@ -121,11 +121,16 @@ function createSummary() {
 
   order.forEach(showOrder);
 
+  document.querySelector("#phone").addEventListener("submit", (e) => {
+    e.preventDefault();
+  });
+
   HTML.mobilePay.addEventListener("click", () => {
     paymentOptionSelected = "mobilepay";
     HTML.counter.classList.remove("selected-option");
     HTML.mobilePay.classList.add("selected-option");
-    document.querySelector("#phone").className = "show-block";
+    document.querySelector("#phone > label").className = "show-block";
+    document.querySelector("#phone-number").className = "show-block";
     HTML.placeOrderBtn.textContent = "Pay now";
   });
 
@@ -133,7 +138,8 @@ function createSummary() {
     paymentOptionSelected = "counter";
     HTML.mobilePay.classList.remove("selected-option");
     HTML.counter.classList.add("selected-option");
-    document.querySelector("#phone").className = "hide-block";
+    document.querySelector("#phone > label").className = "hide-block";
+    document.querySelector("#phone-number").className = "hide-block";
     HTML.placeOrderBtn.textContent = "Place order";
   });
 }

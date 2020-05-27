@@ -68,8 +68,8 @@
             <h3>MobilePay</h3>
             <img src="static/svgs/checkmark.svg" alt="checkmark" />
           </article>
-          <form action="#" id="phone" class="hide-block">
-            <label for="phone">Phone number</label>
+          <form id="phone">
+            <label for="phone" class="hide-block">Phone number</label>
             <input
               type="text"
               name="phone"
@@ -77,14 +77,17 @@
               placeholder="Phone number"
               pattern="[0-9]{8}"
               maxlength="8"
+              class="hide-block"
             />
             <p class="error hide-block">
               <span class="material-icons"> error </span
               ><span>Please provide a valid Danish phone number.</span>
             </p>
+            <button id="place-order-btn" type="submit" class="main_btn">
+              Place order
+            </button>
           </form>
         </section>
-        <button id="place-order-btn" class="main_btn">Place order</button>
       </section>
       <section id="summary">
         <h2>Order summary</h2>
