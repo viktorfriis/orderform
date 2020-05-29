@@ -22,7 +22,14 @@
         <p>DKK 35,00</p>
       </div>
     </header>
+    <!-- <p>Sorted on today's popularity</p> -->
     <main class="show-block">
+      <img
+        src="static/svgs/number1.svg"
+        id="number-one"
+        class="hide-block"
+        alt=""
+      />
       <article class="beer placeholder">
         <div class="loader"></div>
       </article>
@@ -59,12 +66,20 @@
         <section id="options">
           <h2>Payment type</h2>
           <article class="option selected-option" id="counter">
-            <img src="static/svgs/creditcard.svg" alt="credit card logo" />
+            <img
+              src="static/svgs/creditcard.svg"
+              class="option-svg"
+              alt="credit card logo"
+            />
             <h3>Pay at counter</h3>
             <img src="static/svgs/checkmark.svg" alt="checkmark" />
           </article>
           <article class="option" id="mobilepay">
-            <img src="static/svgs/mp-logo.svg" alt="mobilepay logo" />
+            <img
+              src="static/svgs/mp-logo.svg"
+              class="option-svg"
+              alt="mobilepay logo"
+            />
             <h3>MobilePay</h3>
             <img src="static/svgs/checkmark.svg" alt="checkmark" />
           </article>

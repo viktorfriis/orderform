@@ -213,6 +213,9 @@ function fetchBeers() {
               document
                 .querySelectorAll(".placeholder")
                 .forEach((placeholder) => placeholder.remove());
+              document
+                .querySelector("#number-one")
+                .classList.remove("hide-block");
             });
         });
     });

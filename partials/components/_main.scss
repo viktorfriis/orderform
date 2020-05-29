@@ -3,7 +3,11 @@
 body {
   max-width: 1000px;
   margin: 0 auto;
-  padding: 15px;
+  padding: 15px 25px;
+
+  @include big {
+    padding: 15px;
+  }
 }
 
 header {
@@ -76,6 +80,15 @@ main {
   max-width: 300px;
   margin: 0 auto;
   margin-top: 30px;
+  position: relative;
+
+  #number-one {
+    width: 60px;
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    z-index: 10;
+  }
 
   @include tablet {
     grid-template-columns: 1fr 1fr;
