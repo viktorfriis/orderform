@@ -80,7 +80,12 @@ function DOMReady() {
     HTML.orderConfirmation.classList.remove("show-block");
     HTML.orderConfirmation.classList.add("hide-block");
   });
-  HTML.placeOrderBtn.addEventListener("click", () => {
+
+  document.querySelector("#phone").setAttribute("novalidate", true);
+
+  document.querySelector("#phone").addEventListener("submit", (e) => {
+    e.preventDefault();
+
     if (paymentOptionSelected === "mobilepay") {
       if (document.querySelector("#phone-number").checkValidity()) {
         placeOrder();
@@ -120,10 +125,6 @@ function createSummary() {
   }
 
   order.forEach(showOrder);
-
-  document.querySelector("#phone").addEventListener("submit", (e) => {
-    e.preventDefault();
-  });
 
   HTML.mobilePay.addEventListener("click", () => {
     paymentOptionSelected = "mobilepay";
@@ -456,6 +457,11 @@ function updateOrder(beer, quantity, onSummaryPage, beerIndex) {
         .querySelectorAll("input[type='radio']")
         .forEach((radio) => (radio.disabled = false));
     }
+  } else {
+    HTML.totalPrice.classList.add("update_animation");
+    HTML.totalPrice.addEventListener("animationend", () => {
+      HTML.totalPrice.classList.remove("update_animation");
+    });
   }
 
   console.log(order);
@@ -527,7 +533,7 @@ function placeOrder() {
         HTML.payment.className = "hide-block";
         HTML.orderConfirmation.className = "hide-block";
       });
-    }, 3000);
+    }, 5000);
   }
 }
 

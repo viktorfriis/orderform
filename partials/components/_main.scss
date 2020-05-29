@@ -9,15 +9,26 @@ body {
 header {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+
+  @include tablet {
+    padding: 0;
+  }
 
   #logo {
-    width: 250px;
+    width: 150px;
     cursor: pointer;
+
+    @include tablet {
+      width: 250px;
+    }
   }
 
   #cart_container {
     position: relative;
     width: 130px;
+    height: 65px;
     cursor: pointer;
 
     p {
@@ -30,12 +41,29 @@ header {
       bottom: 0;
       left: 10px;
       font-size: 1.2rem;
+      margin: 0;
+    }
+  }
+
+  .update_animation {
+    animation: update;
+    animation-duration: 0.2s;
+    animation-iteration-count: 2;
+    animation-direction: alternate;
+    animation-timing-function: ease-in-out;
+  }
+
+  @keyframes update {
+    0% {
+      transform: scale(1);
+    }
+    100% {
+      transform: scale(1.1);
     }
   }
 
   #cart {
     width: 50px;
-    margin-top: 10px;
     position: absolute;
     right: 0;
   }
