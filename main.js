@@ -13,7 +13,6 @@ let totalQuantity = 0;
 let paymentOptionSelected = "counter";
 
 let today = new Date().toString().substring(0, 3).toLowerCase();
-console.log(today);
 
 const Beer = {
   name: "",
@@ -33,8 +32,6 @@ const OrderItem = {
 };
 
 function start() {
-  console.log("START");
-
   HTML.totalPrice = document.querySelector("#cart_container p");
   HTML.totalPrice.textContent = totalQuantity + " - DKK " + orderTotal + ",00";
   HTML.mainTemplate = document.querySelector("#main-temp");
@@ -96,9 +93,11 @@ function DOMReady() {
       } else {
         //Hvis det ikke er validt, viser vi error message
         document.querySelector(".error").classList.remove("hide-block");
-        document.querySelector("#phone-number").addEventListener("focus", () => {
-          document.querySelector(".error").classList.add("hide-block");
-        });
+        document
+          .querySelector("#phone-number")
+          .addEventListener("focus", () => {
+            document.querySelector(".error").classList.add("hide-block");
+          });
       }
     } else {
       //Hvis der er valgt pay at counter, kalder vi placeOrder med det samme
@@ -133,8 +132,12 @@ function fetchBeers() {
             .then((restDBData) => {
               //Når alt er hentet kalder vi funktionen cleanData, med de 3 arrays som parameter.
               cleanData(data, dataBar, restDBData);
-              document.querySelectorAll(".placeholder").forEach((placeholder) => placeholder.remove());
-              document.querySelector("#number-one").classList.remove("hide-block");
+              document
+                .querySelectorAll(".placeholder")
+                .forEach((placeholder) => placeholder.remove());
+              document
+                .querySelector("#number-one")
+                .classList.remove("hide-block");
             });
         });
     });
@@ -192,8 +195,6 @@ function cleanData(data, dataBar, restDBData) {
   https://gomakethings.com/sorting-an-array-by-multiple-criteria-with-vanilla-javascript/*/
   const sortedArray = sortArray();
 
-  console.log(sortedArray);
-
   //For hver øl i vores sorterede array kører vi funktionen showBeer, som skriver øllen ud i DOM'en.
   sortedArray.forEach((beer) => showBeer(beer));
   fetchSVGS();
@@ -218,7 +219,9 @@ function showBeer(beer) {
   //Klonen fylder vi så ud med de relevante info fra vores beerArray
   klon.querySelector(".beer").setAttribute("data-beertype", beer.name);
   klon.querySelector(".beer").style.setProperty("--beer-color", beer.color);
-  klon.querySelector(".beer").style.setProperty("--beer-color-darken", darkenHEX(beer.color));
+  klon
+    .querySelector(".beer")
+    .style.setProperty("--beer-color-darken", darkenHEX(beer.color));
   klon.querySelector(".name").textContent = beer.name;
   klon.querySelector(".type").textContent = beer.type + " - " + beer.alc + "%";
   klon.querySelector(".price").textContent = "DKK " + beer.price + ",00";
@@ -275,7 +278,9 @@ function showBeer(beer) {
     //Hvis øllen IKKE er på tap, fjerner vi plus minus fra DOM'en, og skriver at den ikke er på tap.
     klon.querySelector(".price").textContent = "Not on tap right now";
     klon.querySelector(".beer").classList.add("not-on-tap");
-    klon.querySelector(".beer").style.setProperty("--beer-color-darken", "black");
+    klon
+      .querySelector(".beer")
+      .style.setProperty("--beer-color-darken", "black");
   }
 
   //Til sidst appender vi hver klon i vores main tag.
@@ -285,9 +290,13 @@ function showBeer(beer) {
 function toggleInfo(beer) {
   beerArray.forEach((beerInfo) => {
     if (beerInfo.name != beer) {
-      document.querySelector(`[data-beertype='${beerInfo.name}']`).classList.remove("info-open");
+      document
+        .querySelector(`[data-beertype='${beerInfo.name}']`)
+        .classList.remove("info-open");
     } else {
-      document.querySelector(`[data-beertype='${beer}']`).classList.toggle("info-open");
+      document
+        .querySelector(`[data-beertype='${beer}']`)
+        .classList.toggle("info-open");
     }
   });
 }
@@ -299,7 +308,9 @@ function fetchSVGS() {
   })
     .then((svg) => svg.text())
     .then((svg) => {
-      document.querySelectorAll(".overlay_container").forEach((beer) => (beer.innerHTML = svg));
+      document
+        .querySelectorAll(".overlay_container")
+        .forEach((beer) => (beer.innerHTML = svg));
     });
 }
 
@@ -313,7 +324,8 @@ function createSummary() {
     document.querySelector("#total h3").textContent = "Your cart is empty...";
     HTML.placeOrderBtn.disabled = true;
   } else {
-    document.querySelector("#total p").textContent = "DKK " + orderTotal + ",00";
+    document.querySelector("#total p").textContent =
+      "DKK " + orderTotal + ",00";
     document.querySelector("#total h3").textContent = "Total";
     HTML.placeOrderBtn.disabled = false;
   }
@@ -348,9 +360,12 @@ function showOrder(orderItem) {
   //I showOrder har vi kun øllens navn og antal der er bestilt, så for at skrive den rigtige pris, skal vi finde øllen i vores beerArray
   const beerIndex = beerArray.findIndex((obj) => obj.name === orderItem.name);
 
-  klon.querySelector(".order-item").setAttribute("data-summary-beertype", orderItem.name);
+  klon
+    .querySelector(".order-item")
+    .setAttribute("data-summary-beertype", orderItem.name);
   klon.querySelector(".summary-name").textContent = orderItem.name;
-  klon.querySelector(".summary-price").textContent = "DKK " + beerArray[beerIndex].price * orderItem.amount + ",00";
+  klon.querySelector(".summary-price").textContent =
+    "DKK " + beerArray[beerIndex].price * orderItem.amount + ",00";
 
   let quantity = beerArray[beerIndex].amountInOrder;
   let onSummaryPage = true;
@@ -411,29 +426,42 @@ function updateOrder(beer, quantity, onSummaryPage, beerIndex) {
   }
 
   //Her skriver vi den korrekte quantity ud i DOM'en, på det rigtige sted.
-  document.querySelector(`[data-beertype='${beer.name}']`).querySelector(".quantity p").textContent = quantity;
+  document
+    .querySelector(`[data-beertype='${beer.name}']`)
+    .querySelector(".quantity p").textContent = quantity;
 
   //Vi opdaterer her kurven oppe i højre hjørne.
   HTML.totalPrice.textContent = totalQuantity + " - DKK " + orderTotal + ",00";
 
   //Hvis vi er på summary siden, skriver vi de rigtige data ud i DOM'en.
   if (onSummaryPage) {
-    document.querySelector(`[data-summary-beertype='${beer.name}']`).querySelector(".quantity p").textContent = quantity;
+    document
+      .querySelector(`[data-summary-beertype='${beer.name}']`)
+      .querySelector(".quantity p").textContent = quantity;
 
-    document.querySelector(`[data-summary-beertype='${beer.name}']`).querySelector(".summary-price").textContent = "DKK " + quantity * beerArray[beerIndex].price + ",00";
+    document
+      .querySelector(`[data-summary-beertype='${beer.name}']`)
+      .querySelector(".summary-price").textContent =
+      "DKK " + quantity * beerArray[beerIndex].price + ",00";
 
-    document.querySelector("#total p").textContent = "DKK " + orderTotal + ",00";
+    document.querySelector("#total p").textContent =
+      "DKK " + orderTotal + ",00";
 
     if (order.length === 0) {
       document.querySelector("#total p").textContent = "";
       document.querySelector("#total h3").textContent = "Your cart is empty...";
       HTML.placeOrderBtn.disabled = true;
-      document.querySelectorAll("input[type='radio']").forEach((radio) => (radio.disabled = true));
+      document
+        .querySelectorAll("input[type='radio']")
+        .forEach((radio) => (radio.disabled = true));
     } else {
-      document.querySelector("#total p").textContent = "DKK " + orderTotal + ",00";
+      document.querySelector("#total p").textContent =
+        "DKK " + orderTotal + ",00";
       document.querySelector("#total h3").textContent = "Total";
       HTML.placeOrderBtn.disabled = false;
-      document.querySelectorAll("input[type='radio']").forEach((radio) => (radio.disabled = false));
+      document
+        .querySelectorAll("input[type='radio']")
+        .forEach((radio) => (radio.disabled = false));
     }
   } else {
     HTML.totalPrice.classList.add("update_animation");
@@ -441,8 +469,6 @@ function updateOrder(beer, quantity, onSummaryPage, beerIndex) {
       HTML.totalPrice.classList.remove("update_animation");
     });
   }
-
-  console.log(order);
 }
 
 function placeOrder() {
@@ -462,7 +488,9 @@ function placeOrder() {
   document.querySelector("#phone-number").value = "";
   HTML.totalPrice.textContent = totalQuantity + " - DKK " + orderTotal + ",00";
 
-  document.querySelectorAll(".quantity p").forEach((q) => (q.textContent = "0"));
+  document
+    .querySelectorAll(".quantity p")
+    .forEach((q) => (q.textContent = "0"));
 
   fetch(endPoint + "order", {
     method: "post",
@@ -473,18 +501,16 @@ function placeOrder() {
   })
     .then((e) => e.json())
     .then((e) => {
-      console.log(e);
-
       fetch(endPoint, {
         method: "get",
       })
         .then((newData) => newData.json())
         .then((newData) => {
           const orderID = newData.queue[newData.queue.length - 1].id;
-          HTML.orderIDConfirmation.textContent = "Your order number is #" + orderID;
+          HTML.orderIDConfirmation.textContent =
+            "Your order number is #" + orderID;
 
           order.length = 0;
-          console.log("Order reset");
 
           if (paymentOptionSelected === "counter") {
             HTML.processing.className = "hide-block";
