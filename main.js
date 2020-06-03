@@ -57,6 +57,7 @@ function start() {
 }
 
 function DOMReady() {
+  //Viser kurven når der klikkes på kurven
   HTML.cart.addEventListener("click", () => {
     HTML.main.classList.add("hide-block");
     HTML.main.classList.remove("show-block");
@@ -70,6 +71,7 @@ function DOMReady() {
     createSummary();
   });
 
+  //Viser forsiden når der klikkes på logo
   HTML.logo.addEventListener("click", () => {
     HTML.main.classList.remove("hide-block");
     HTML.main.classList.add("show-block");
@@ -87,91 +89,22 @@ function DOMReady() {
     e.preventDefault();
 
     if (paymentOptionSelected === "mobilepay") {
+      //Hvis der er valgt mobilepay, tjekker vi om mobilnummeret er validt.
       if (document.querySelector("#phone-number").checkValidity()) {
+        //Hvis det er validt, kalder vi placeOrder()
         placeOrder();
       } else {
+        //Hvis det ikke er validt, viser vi error message
         document.querySelector(".error").classList.remove("hide-block");
         document.querySelector("#phone-number").addEventListener("focus", () => {
           document.querySelector(".error").classList.add("hide-block");
         });
       }
     } else {
+      //Hvis der er valgt pay at counter, kalder vi placeOrder med det samme
       placeOrder();
     }
   });
-}
-
-function createSummary() {
-  HTML.orderItemContainer.innerHTML = "";
-  document.querySelector("#total p").textContent = "DKK " + orderTotal + ",00";
-
-  if (order.length === 0) {
-    document.querySelector("#total p").textContent = "";
-    document.querySelector("#total h3").textContent = "Your cart is empty...";
-    HTML.placeOrderBtn.disabled = true;
-    document.querySelectorAll("input[type='radio']").forEach((radio) => (radio.disabled = true));
-  } else {
-    document.querySelector("#total p").textContent = "DKK " + orderTotal + ",00";
-    document.querySelector("#total h3").textContent = "Total";
-    HTML.placeOrderBtn.disabled = false;
-    document.querySelectorAll("input[type='radio']").forEach((radio) => (radio.disabled = false));
-  }
-
-  order.forEach(showOrder);
-
-  HTML.mobilePay.addEventListener("click", () => {
-    paymentOptionSelected = "mobilepay";
-    HTML.counter.classList.remove("selected-option");
-    HTML.mobilePay.classList.add("selected-option");
-    document.querySelector("#phone > label").className = "show-block";
-    document.querySelector("#phone-number").className = "show-block";
-    HTML.placeOrderBtn.textContent = "Pay now";
-  });
-
-  HTML.counter.addEventListener("click", () => {
-    paymentOptionSelected = "counter";
-    HTML.mobilePay.classList.remove("selected-option");
-    HTML.counter.classList.add("selected-option");
-    document.querySelector("#phone > label").className = "hide-block";
-    document.querySelector("#phone-number").className = "hide-block";
-    HTML.placeOrderBtn.textContent = "Place order";
-  });
-}
-
-function showOrder(orderItem) {
-  let klon = HTML.orderItemTemplate.cloneNode(true).content;
-  const beerIndex = beerArray.findIndex((obj) => obj.name === orderItem.name);
-
-  klon.querySelector(".order-item").setAttribute("data-summary-beertype", orderItem.name);
-  klon.querySelector(".summary-name").textContent = orderItem.name;
-  klon.querySelector(".summary-price").textContent = "DKK " + beerArray[beerIndex].price * orderItem.amount + ",00";
-
-  let quantity = beerArray[beerIndex].amountInOrder;
-  let onSummaryPage = true;
-
-  klon.querySelector(".minus").addEventListener("click", () => {
-    if (quantity != 0) {
-      orderTotal = orderTotal - beerArray[beerIndex].price;
-      totalQuantity--;
-      quantity--;
-
-      beerArray[beerIndex].amountInOrder = quantity;
-      updateOrder(orderItem, quantity, onSummaryPage, beerIndex);
-    }
-  });
-
-  klon.querySelector(".add").addEventListener("click", () => {
-    orderTotal = orderTotal + beerArray[beerIndex].price;
-    totalQuantity++;
-    quantity++;
-
-    beerArray[beerIndex].amountInOrder = quantity;
-    updateOrder(orderItem, quantity, onSummaryPage, beerIndex);
-  });
-
-  klon.querySelector(".quantity p").textContent = quantity;
-
-  HTML.orderItemContainer.appendChild(klon);
 }
 
 function fetchBeers() {
@@ -370,6 +303,85 @@ function fetchSVGS() {
     });
 }
 
+function createSummary() {
+  HTML.orderItemContainer.innerHTML = "";
+  document.querySelector("#total p").textContent = "DKK " + orderTotal + ",00";
+
+  if (order.length === 0) {
+    //Hvis der ikke er nogle øl i kurven, skriver vi at kurven er tom, og slår bestillingsknappen fra
+    document.querySelector("#total p").textContent = "";
+    document.querySelector("#total h3").textContent = "Your cart is empty...";
+    HTML.placeOrderBtn.disabled = true;
+  } else {
+    document.querySelector("#total p").textContent = "DKK " + orderTotal + ",00";
+    document.querySelector("#total h3").textContent = "Total";
+    HTML.placeOrderBtn.disabled = false;
+  }
+
+  //For hver øl der ligger i kurven, kalder vi showOrder
+  order.forEach(showOrder);
+
+  //Her gør vi mobilepay klikbar, og viser input til telefonnummer, hvis der bliver klikket
+  HTML.mobilePay.addEventListener("click", () => {
+    paymentOptionSelected = "mobilepay";
+    HTML.counter.classList.remove("selected-option");
+    HTML.mobilePay.classList.add("selected-option");
+    document.querySelector("#phone > label").className = "show-block";
+    document.querySelector("#phone-number").className = "show-block";
+    HTML.placeOrderBtn.textContent = "Pay now";
+  });
+
+  //Her gør vi pay at counter klikbar, og fjerner input feltet til telefonnummer
+  HTML.counter.addEventListener("click", () => {
+    paymentOptionSelected = "counter";
+    HTML.mobilePay.classList.remove("selected-option");
+    HTML.counter.classList.add("selected-option");
+    document.querySelector("#phone > label").className = "hide-block";
+    document.querySelector("#phone-number").className = "hide-block";
+    HTML.placeOrderBtn.textContent = "Place order";
+  });
+}
+
+function showOrder(orderItem) {
+  let klon = HTML.orderItemTemplate.cloneNode(true).content;
+
+  //I showOrder har vi kun øllens navn og antal der er bestilt, så for at skrive den rigtige pris, skal vi finde øllen i vores beerArray
+  const beerIndex = beerArray.findIndex((obj) => obj.name === orderItem.name);
+
+  klon.querySelector(".order-item").setAttribute("data-summary-beertype", orderItem.name);
+  klon.querySelector(".summary-name").textContent = orderItem.name;
+  klon.querySelector(".summary-price").textContent = "DKK " + beerArray[beerIndex].price * orderItem.amount + ",00";
+
+  let quantity = beerArray[beerIndex].amountInOrder;
+  let onSummaryPage = true;
+
+  klon.querySelector(".minus").addEventListener("click", () => {
+    if (quantity != 0) {
+      orderTotal = orderTotal - beerArray[beerIndex].price;
+      totalQuantity--;
+      quantity--;
+
+      beerArray[beerIndex].amountInOrder = quantity;
+      updateOrder(orderItem, quantity, onSummaryPage, beerIndex);
+    }
+  });
+
+  klon.querySelector(".add").addEventListener("click", () => {
+    orderTotal = orderTotal + beerArray[beerIndex].price;
+    totalQuantity++;
+    quantity++;
+
+    beerArray[beerIndex].amountInOrder = quantity;
+    updateOrder(orderItem, quantity, onSummaryPage, beerIndex);
+  });
+
+  klon.querySelector(".quantity p").textContent = quantity;
+
+  HTML.orderItemContainer.appendChild(klon);
+}
+
+/*Denne funktion modtager beer (som kan være enten objektet fra vores beerArray, eller objektet fra vores order), samt 
+quantity, som er det opdaterede antal, onSummaryPage, som fortæller om vi står i kurven eller ej, og øllens index i beerArray */
 function updateOrder(beer, quantity, onSummaryPage, beerIndex) {
   //Her bruger vi igen en prototype, for at sikre at vi bruger det rigtige format, til at poste vores ordre
   let orderItem = Object.create(OrderItem);
@@ -500,7 +512,7 @@ function placeOrder() {
   }
 }
 
-//Stolen from https://css-tricks.com/converting-color-spaces-in-javascript/
+//Borrowed from https://css-tricks.com/converting-color-spaces-in-javascript/
 function darkenHEX(H) {
   // Convert hex to RGB first
   let r = 0,
