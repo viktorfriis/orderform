@@ -548,7 +548,7 @@ function placeOrder() {
   }
 }
 
-//Stolen from https://css-tricks.com/converting-color-spaces-in-javascript/
+//Borrowed from https://css-tricks.com/converting-color-spaces-in-javascript/
 function darkenHEX(H) {
   // Convert hex to RGB first
   let r = 0,
